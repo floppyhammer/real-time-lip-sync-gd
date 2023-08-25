@@ -9,6 +9,7 @@ use std::{
 };
 
 use crate::{job, job::JobMessage};
+use crate::model::VowelEstimate;
 
 const LIP_SYNC_UPDATED: &str = "lip_sync_updated";
 const LIP_SYNC_PANICKED: &str = "lip_sync_panicked";
@@ -40,23 +41,28 @@ impl LipSync {
             .expect("Unable to send stream to thread");
     }
 
-    pub fn poll(&self) {
+    pub fn poll(&self) -> Option<VowelEstimate> {
         match self.receiver.try_recv() {
             Ok(v) => match v {
                 JobMessage::OutputData(od) => {
-                    println!("{:?} ", od);
+                    // println!("{:?} ", od);
+                    return Some(od);
                 }
                 _ => {
                     // Unexpected data
                     self.sender.send(JobMessage::Shutdown).expect("When shutting down thread because of invalid message, encountered error. Shutting down anyways.");
+                    return None;
                 }
             },
             Err(e) => {
                 if e == mpsc::TryRecvError::Disconnected {
                     println!("LIP_SYNC_PANICKED with error: {}", e);
+                    return None;
                 }
             }
         }
+
+        return None;
     }
 
     pub fn shutdown(&mut self) {
