@@ -1,5 +1,4 @@
 use crate::{algorithm::*, model::*};
-use gdnative::prelude::*;
 use rand::Rng;
 use std::{
     collections::{HashMap, VecDeque},
@@ -9,7 +8,8 @@ use std::{
 
 struct Job {
     before_sample_array: Vec<f32>,
-    peaks3_log: VecDeque<Vec<DataPoint>>, // TODO pretty sure these are just ring buffers
+    peaks3_log: VecDeque<Vec<DataPoint>>,
+    // TODO pretty sure these are just ring buffers
     peaks4_log: VecDeque<Vec<DataPoint>>,
     vowel_log: VecDeque<i32>,
     estimate_log: VecDeque<i32>,
@@ -26,12 +26,13 @@ impl Job {
         }
     }
 
-    pub fn execute(&mut self, stream: &TypedArray<f32>) -> Option<VowelEstimate> {
+    pub fn execute(&mut self, stream: &Vec<f32>) -> Option<VowelEstimate> {
         // let mut data = Job::read_16_bit_samples(stream);
         let mut data = vec![];
-        for i in stream.read().iter() {
-            data.push(*i);
-        }
+        // for i in stream.read().iter() {
+        //     data.push(*i);
+        // }
+        data = stream.clone();
 
         if data.len() < FFT_SAMPLES {
             return None;
@@ -74,12 +75,12 @@ impl Job {
     }
 
     // TODO this is returning values that are not in range -1..1
-    fn read_16_bit_samples(stream: &TypedArray<u8>) -> Vec<f32> {
+    fn read_16_bit_samples(stream: &Vec<u8>) -> Vec<f32> {
         let mut res = vec![];
         let mut i = 0;
         while i < stream.len() {
-            let b0 = stream.get(i);
-            let b1 = stream.get(i + 1);
+            let b0 = stream[i];
+            let b1 = stream[i + 1];
             let mut u = b0 as u16 | ((b1 as u16) << 8);
             u = (u + 32768) & 0xffff;
             let s = (u - 32768) as f32 / 32768.0;
@@ -192,7 +193,7 @@ impl Job {
                     self.peaks4_log.pop_back();
                 }
             }
-            _ => godot_print!("push_peaks encountered invalid data"),
+            _ => println!("push_peaks encountered invalid data"),
         }
     }
 
@@ -268,7 +269,7 @@ impl Job {
 }
 
 pub enum JobMessage {
-    InputData(TypedArray<f32>),
+    InputData(Vec<f32>),
     OutputData(VowelEstimate),
     Shutdown,
 }
@@ -285,18 +286,18 @@ pub fn create_job() -> Option<(
 
     let builder = thread::Builder::new();
     match builder.spawn(move || loop {
-        let new_data: TypedArray<f32>;
+        let new_data: Vec<f32>;
         if let Ok(msg) = r1.recv() {
             match msg {
                 JobMessage::InputData(d) => new_data = d,
                 JobMessage::Shutdown => break,
                 _ => {
-                    godot_print!("Error when matching job data");
+                    println!("Error when matching job data");
                     break;
                 }
             }
         } else {
-            godot_print!("Error when receiving job data");
+            println!("Error when receiving job data");
             break;
         }
 
@@ -304,7 +305,7 @@ pub fn create_job() -> Option<(
             match s1.send(JobMessage::OutputData(vowel)) {
                 Ok(_) => {}
                 Err(e) => {
-                    godot_print!("Error when sending output from job: {:?}", e);
+                    println!("Error when sending output from job: {:?}", e);
                     break;
                 }
             }

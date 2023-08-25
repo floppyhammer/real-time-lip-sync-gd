@@ -1,4 +1,3 @@
-use gdnative::prelude::*;
 use lazy_static::lazy_static;
 use std::{
     collections::{HashMap, VecDeque},
@@ -193,14 +192,14 @@ impl VowelEstimate {
     }
 }
 
-impl From<VowelEstimate> for Dictionary {
-    fn from(ve: VowelEstimate) -> Self {
-        let dict = Dictionary::new();
-
-        dict.insert("estimate", ve.estimate);
-        dict.insert("vowel", ve.vowel);
-        dict.insert("amount", ve.amount);
-
-        dict.into_shared()
-    }
-}
+// impl From<VowelEstimate> for Dictionary {
+//     fn from(ve: VowelEstimate) -> Self {
+//         let dict = Dictionary::new();
+//
+//         dict.insert("estimate", ve.estimate);
+//         dict.insert("vowel", ve.vowel);
+//         dict.insert("amount", ve.amount);
+//
+//         dict.into_shared()
+//     }
+// }

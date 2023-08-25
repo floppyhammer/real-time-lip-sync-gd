@@ -1,4 +1,3 @@
-use gdnative::prelude::*;
 use std::boxed::Box;
 
 use crate::model::{DataPoint, INV_LOG10, PI2};
