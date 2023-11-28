@@ -66,7 +66,7 @@ impl LipSync {
     }
 
     pub fn shutdown(&mut self) {
-        self.sender.send(JobMessage::Shutdown).expect("When shutting down thread because of invalid message, encoutered error. Shutting down anyways.");
+        self.sender.send(JobMessage::Shutdown).expect("When shutting down thread because of invalid message, encountered error. Shutting down anyways.");
         self.join_handle
             .take()
             .expect("Unable to take join_handle")

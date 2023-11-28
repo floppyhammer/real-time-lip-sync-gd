@@ -7,16 +7,18 @@ use kira::{
 };
 
 fn main() {
+    let working_dir = std::env::current_dir();
+    println!("Working directory: {:?}", working_dir.unwrap());
+
     // Create an audio manager, which plays sounds and manages resources.
     let mut manager = AudioManager::<DefaultBackend>::new(AudioManagerSettings::default()).unwrap();
 
     let sound_data = match StaticSoundData::from_file("sound.ogg", StaticSoundSettings::default()) {
         Ok(data) => {
-            println!("Loaded audio file.");
             data
         }
         Err(error) => {
-            println!("Error loading audio file: {:?}", error);
+            println!("Failed to load audio file: {:?}", error);
             panic!();
         }
     };

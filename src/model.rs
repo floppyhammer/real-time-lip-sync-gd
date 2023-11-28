@@ -185,9 +185,9 @@ pub struct VowelEstimate {
 impl VowelEstimate {
     pub fn new(estimate: i32, vowel: i32, amount: f32) -> Self {
         VowelEstimate {
-            estimate: estimate,
-            vowel: vowel,
-            amount: amount,
+            estimate,
+            vowel,
+            amount,
         }
     }
 }

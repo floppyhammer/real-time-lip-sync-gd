@@ -2,6 +2,8 @@ use std::boxed::Box;
 
 use crate::model::{DataPoint, INV_LOG10, PI2};
 
+/// Returns the current volume value in the range between 0 and 1.
+/// The unit for volume is RMS (root mean square).
 pub fn rms(data: &[f32]) -> f32 {
     let mut rms: f32 = 0.0;
 
@@ -11,8 +13,6 @@ pub fn rms(data: &[f32]) -> f32 {
 
     rms = (rms / data.len() as f32).sqrt();
     rms = 20.0 * (rms.ln() * *INV_LOG10);
-
-    // godot_print!("{}", data[0]);
 
     rms
 }
@@ -132,9 +132,12 @@ pub fn lerp(a: f32, b: f32, f: f32) -> f32 {
     a + f * (b - a)
 }
 
+/// Given `l = a + f * (b - a)`, calculate `f`.
 pub fn inverse_lerp(a: f32, b: f32, l: f32) -> f32 {
     // l = a + f * (b - a)
+    // =>
     // l - a = f * (b - a)
+    // =>
     // (l - a)/(b - a) = f
     (l - a) / (b - a)
 }

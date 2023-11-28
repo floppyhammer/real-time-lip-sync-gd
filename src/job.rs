@@ -40,7 +40,7 @@ impl Job {
 
         let rms = rms(data.as_slice());
 
-        data = data[..FFT_SAMPLES as usize].to_vec();
+        data = data[..FFT_SAMPLES].to_vec();
         hamming(data.as_mut_slice());
         rfft(data.as_mut_slice(), false, true);
         data = data[..((FFT_SAMPLES as f32 * 0.5) as usize) + 1].to_vec();
@@ -108,6 +108,7 @@ impl Job {
         }
         out
     }
+
     fn get_peaks_average(&mut self, size: usize) -> Vec<DataPoint> {
         let mut out = vec![];
         let mut i = 1;
