@@ -13,13 +13,14 @@ fn main() {
     // Create an audio manager, which plays sounds and manages resources.
     let mut manager = AudioManager::<DefaultBackend>::new(AudioManagerSettings::default()).unwrap();
 
-    let sound_data = match StaticSoundData::from_file("sound.ogg", StaticSoundSettings::default()) {
-        Ok(data) => data,
-        Err(error) => {
-            println!("Failed to load audio file: {:?}", error);
-            panic!();
-        }
-    };
+    let sound_data =
+        match StaticSoundData::from_file("test_sound.ogg", StaticSoundSettings::default()) {
+            Ok(data) => data,
+            Err(error) => {
+                println!("Failed to load audio file: {:?}", error);
+                panic!();
+            }
+        };
 
     let res = manager.play(sound_data.clone());
     if res.is_err() {
@@ -51,7 +52,13 @@ fn main() {
                     }
 
                     lip_sync.update(stream);
-                    lip_sync.poll();
+
+                    match lip_sync.poll() {
+                        None => {}
+                        Some(est) => {
+                            println!("{:?} {:?} {:?}", est.estimate, est.vowel, est.amount);
+                        }
+                    }
                 }
             }
             Err(e) => {
