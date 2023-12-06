@@ -8,8 +8,8 @@ use std::{
     thread,
 };
 
-use crate::{job, job::JobMessage};
 use crate::model::VowelEstimate;
+use crate::{job, job::JobMessage};
 
 const LIP_SYNC_UPDATED: &str = "lip_sync_updated";
 const LIP_SYNC_PANICKED: &str = "lip_sync_panicked";

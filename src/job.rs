@@ -27,12 +27,7 @@ impl Job {
     }
 
     pub fn execute(&mut self, stream: &Vec<f32>) -> Option<VowelEstimate> {
-        // let mut data = Job::read_16_bit_samples(stream);
-        let mut data = vec![];
-        // for i in stream.read().iter() {
-        //     data.push(*i);
-        // }
-        data = stream.clone();
+        let mut data = stream.clone();
 
         if data.len() < FFT_SAMPLES {
             return None;
@@ -212,7 +207,7 @@ impl Job {
         let mut i = 1;
         let mut min_distance = distance_vowel[0];
         let mut min_idx = 0;
-        while i < FFT_SAMPLES as usize {
+        while i < VOWELS.len() {
             let dist = distance_vowel[i];
             if dist < min_distance {
                 min_distance = dist;

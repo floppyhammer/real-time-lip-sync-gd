@@ -14,9 +14,7 @@ fn main() {
     let mut manager = AudioManager::<DefaultBackend>::new(AudioManagerSettings::default()).unwrap();
 
     let sound_data = match StaticSoundData::from_file("sound.ogg", StaticSoundSettings::default()) {
-        Ok(data) => {
-            data
-        }
+        Ok(data) => data,
         Err(error) => {
             println!("Failed to load audio file: {:?}", error);
             panic!();
