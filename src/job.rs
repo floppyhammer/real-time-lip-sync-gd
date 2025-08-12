@@ -80,8 +80,8 @@ impl Job {
         let mut res = vec![];
         let mut i = 0;
         while i < stream.len() {
-            let b0 = stream.get(i);
-            let b1 = stream.get(i + 1);
+            let b0 = stream.get(i).unwrap();
+            let b1 = stream.get(i + 1).unwrap();
             let mut u = b0 as u16 | ((b1 as u16) << 8);
             u = (u + 32768) & 0xffff;
             let s = (u - 32768) as f32 / 32768.0;

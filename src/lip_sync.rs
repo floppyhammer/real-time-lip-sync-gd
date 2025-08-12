@@ -50,10 +50,8 @@ impl LipSyncRs {
                 JobMessage::OutputData(od) => {
                     // godot_print!("Emitted signal: {:?}", LIP_SYNC_UPDATED);
 
-                    self.base.emit_signal(
-                        LIP_SYNC_UPDATED.into(),
-                        &[Variant::from(Dictionary::from(od))],
-                    );
+                    self.base_mut()
+                        .emit_signal(LIP_SYNC_UPDATED, &[Variant::from(Dictionary::from(od))]);
                 }
                 _ => {
                     // Unexpected data
@@ -64,8 +62,8 @@ impl LipSyncRs {
                 if e == mpsc::TryRecvError::Disconnected {
                     // godot_print!("Emitted signal: {:?}", LIP_SYNC_PANICKED);
 
-                    self.base
-                        .emit_signal(LIP_SYNC_PANICKED.into(), &[Variant::from(format!("{}", e))]);
+                    self.base_mut()
+                        .emit_signal(LIP_SYNC_PANICKED, &[Variant::from(format!("{}", e))]);
                 }
             }
         }
